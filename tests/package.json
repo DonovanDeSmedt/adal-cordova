@@ -1,9 +1,9 @@
 {
-  "name": "cordova-plugin-ms-adal-tests",
+  "name": "cordova-adal-plugin-tests",
   "version": "0.10.1",
   "description": "",
   "cordova": {
-    "id": "cordova-plugin-ms-adal-tests",
+    "id": "cordova-adal-plugin-tests",
     "platforms": []
   },
   "keywords": [

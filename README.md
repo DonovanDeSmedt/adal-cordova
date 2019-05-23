@@ -6,9 +6,9 @@
 Active Directory Authentication Library ([ADAL](https://msdn.microsoft.com/en-us/library/azure/jj573266.aspx)) plugin provides easy to use authentication functionality for your Apache Cordova apps by taking advantage of Windows Server Active Directory and Windows Azure Active Directory.
 Here you can find the source code for the library.
 
-  * [ADAL for Android](https://github.com/AzureAD/azure-activedirectory-library-for-android),
-  * [ADAL for iOS](https://github.com/AzureAD/azure-activedirectory-library-for-objc),
-  * [ADAL for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet).
+- [ADAL for Android](https://github.com/AzureAD/azure-activedirectory-library-for-android),
+- [ADAL for iOS](https://github.com/AzureAD/azure-activedirectory-library-for-objc),
+- [ADAL for .NET](https://github.com/AzureAD/azure-activedirectory-library-for-dotnet).
 
 ## NOTICE: iOS 10 and Azure Authentication
 
@@ -21,10 +21,10 @@ Once you’ve updated plugin to the latest version your application will continu
 - navigate to your app's directory
 - run the following commands:
 
-    ```
-    cordova plugin rm cordova-plugin-ms-adal --save
-    cordova plugin add cordova-plugin-ms-adal@0.8.x --save
-    ```
+  ```
+  cordova plugin rm cordova-adal-plugin --save
+  cordova plugin add cordova-adal-plugin --save
+  ```
 
 ## Community Help and Support
 
@@ -41,40 +41,40 @@ If you find a security issue with our libraries or services please report it to 
 This plugin uses native SDKs for ADAL for each supported platform and provides single API across all platforms. Here is a quick usage sample:
 
 ```javascript
-
 // Shows user authentication dialog if required
 function authenticate(authCompletedCallback, errorCallback) {
   var authContext = new Microsoft.ADAL.AuthenticationContext(authority);
-  authContext.tokenCache.readItems().then(function (items) {
+  authContext.tokenCache.readItems().then(function(items) {
     if (items.length > 0) {
-        authority = items[0].authority;
-        authContext = new Microsoft.ADAL.AuthenticationContext(authority);
+      authority = items[0].authority;
+      authContext = new Microsoft.ADAL.AuthenticationContext(authority);
     }
     // Attempt to authorize user silently
-    authContext.acquireTokenSilentAsync(resourceUri, clientId)
-    .then(authCompletedCallback, function () {
-        // We require user credentials so triggers authentication dialog
-        authContext.acquireTokenAsync(resourceUri, clientId, redirectUri)
-        .then(authCompletedCallback, errorCallback);
+    authContext.acquireTokenSilentAsync(resourceUri, clientId).then(authCompletedCallback, function() {
+      // We require user credentials so triggers authentication dialog
+      authContext.acquireTokenAsync(resourceUri, clientId, redirectUri).then(authCompletedCallback, errorCallback);
     });
   });
-};
+}
 
-authenticate(function(authResponse) {
-  console.log("Token acquired: " + authResponse.accessToken);
-  console.log("Token will expire on: " + authResponse.expiresOn);
-}, function(err) {
-  console.log("Failed to authenticate: " + err);
-});
+authenticate(
+  function(authResponse) {
+    console.log('Token acquired: ' + authResponse.accessToken);
+    console.log('Token will expire on: ' + authResponse.expiresOn);
+  },
+  function(err) {
+    console.log('Failed to authenticate: ' + err);
+  }
+);
 ```
 
 For more API documentation and examples see [Azure AD Cordova Getting Started](https://azure.microsoft.com/en-us/documentation/articles/active-directory-devquickstarts-cordova/) and JSDoc for exposed functionality stored in [www](https://github.com/AzureAD/azure-activedirectory-library-for-cordova/tree/master/www) subfolder.
 
 ## Supported platforms
 
-  * Android (OS 4.0.3 and higher)
-  * iOS
-  * Windows (Windows 8.0, Windows 8.1, Windows 10 and Windows Phone 8.1)
+- Android (OS 4.0.3 and higher)
+- iOS
+- Windows (Windows 8.0, Windows 8.1, Windows 10 and Windows Phone 8.1)
 
 ## Creating new AuthenticationContext
 
@@ -82,33 +82,38 @@ The `Microsoft.ADAL.AuthenticationContext` class retrieves authentication tokens
 Use `AuthenticationContext` constructor to synchronously create a new `AuthenticationContext` object.
 
 #### Parameters
-- __authority__: Authority url to send code and token requests. _(String)_ [Required]
-- __validateAuthority__: Validate authority before sending token request. _(Boolean)_ (Default: `true`) [Optional]
+
+- **authority**: Authority url to send code and token requests. _(String)_ [Required]
+- **validateAuthority**: Validate authority before sending token request. _(Boolean)_ (Default: `true`) [Optional]
 
 #### Example
+
     var authContext = new Microsoft.ADAL.AuthenticationContext("https://login.windows.net/common");
 
 ## AuthenticationContext methods and properties
+
 - acquireTokenAsync
 - acquireTokenSilentAsync
 - tokenCache
 
 ### acquireTokenAsync
+
 The `AuthenticationContext.acquireTokenAsync` method asynchronously acquires token using interactive flow.
 It **always shows UI** and skips token from cache.
 
-- __resourceUrl__: Resource identifier. _(String)_ [Required]
-- __clientId__: Client (application) identifier. _(String)_ [Required]
-- __redirectUrl__: Redirect url for this application. _(String)_ [Required]
-- __userId__: User identifier. _(String)_ [Optional]
-- __extraQueryParameters__: Extra query parameters. Parameters should be escaped before passing to this method (e.g. using 'encodeURI()') _(String)_ [Optional]
+- **resourceUrl**: Resource identifier. _(String)_ [Required]
+- **clientId**: Client (application) identifier. _(String)_ [Required]
+- **redirectUrl**: Redirect url for this application. _(String)_ [Required]
+- **userId**: User identifier. _(String)_ [Optional]
+- **extraQueryParameters**: Extra query parameters. Parameters should be escaped before passing to this method (e.g. using 'encodeURI()') _(String)_ [Optional]
 
-__Note__: Those with experience in using native ADAL libraries should pay attention as the plugin uses `PromptBehaviour.Always`
+**Note**: Those with experience in using native ADAL libraries should pay attention as the plugin uses `PromptBehaviour.Always`
 when calling `AcquireToken` method and native libraries use `PromptBehaviour.Auto` by default. As a result
 the plugin does not check the cache for existing access or refresh token. This is special design decision
 so that `AcquireToken` is always showing a UX and `AcquireTokenSilent` never does so.
 
 #### Example
+
 ```
 var authContext = new Microsoft.ADAL.AuthenticationContext("https://login.windows.net/common");
 authContext.acquireTokenAsync("https://graph.windows.net", "a5d92493-ae5a-4a9f-bcbf-9f1d354067d3", "http://MyDirectorySearcherApp")
@@ -121,15 +126,17 @@ authContext.acquireTokenAsync("https://graph.windows.net", "a5d92493-ae5a-4a9f-b
 ```
 
 ### acquireTokenSilentAsync
+
 The `AuthenticationContext.acquireTokenSilentAsync` method acquires token WITHOUT using interactive flow.
 It checks the cache to return existing result if not expired. It tries to use refresh token if available.
 If it fails to get token withoutd isplaying UI it will fail. This method guarantees that no UI will be shown to user.
 
-- __resourceUrl__: Resource identifier. _(String)_ [Required]
-- __clientId__: Client (application) identifier. _(String)_ [Required]
-- __userId__: User identifier. _(String)_ [Optional]
+- **resourceUrl**: Resource identifier. _(String)_ [Required]
+- **clientId**: Client (application) identifier. _(String)_ [Required]
+- **userId**: User identifier. _(String)_ [Optional]
 
 #### Example
+
 ```
 var authContext = new Microsoft.ADAL.AuthenticationContext("https://login.windows.net/common");
 authContext.acquireTokenSilentAsync("https://graph.windows.net", "a5d92493-ae5a-4a9f-bcbf-9f1d354067d3")
@@ -142,10 +149,12 @@ authContext.acquireTokenSilentAsync("https://graph.windows.net", "a5d92493-ae5a-
 ```
 
 ### tokenCache
+
 The `AuthenticationContext.tokenCache` property returns `TokenCache` class instance which stores access and refresh tokens.
 This class could be used to retrieve cached items (`readItems` method), remove specific (`deleteItem` method) or all items (`clear` method).
 
 #### Example
+
 ```
 var authContext = new Microsoft.ADAL.AuthenticationContext("https://login.windows.net/common");
 authContext.tokenCache.readItems().then(function (items) {
@@ -158,33 +167,38 @@ authContext.tokenCache.readItems().then(function (items) {
 In case of method execution failure corresponding promise is rejected with a standard `JavaScript Error` instance.
 The following error properties are available for you in this case:
 
-* err.message - Human-readable description of the error.
-* err.code - Error-code returned by native SDK; you can use this information to detect most common error reasons and provide extra
-logic based on this information. **Important:** code is platform specific, see below for more details:
- * iOS: https://github.com/AzureAD/azure-activedirectory-library-for-objc/blob/dev/ADAL/src/public/ADErrorCodes.h
- * Android: https://github.com/AzureAD/azure-activedirectory-library-for-android/blob/master/src/src/com/microsoft/aad/adal/ADALError.java
- * Windows: https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/blob/master/src/ADAL.PCL/Constants.cs
-* err.details - Raw error information returned by Apache Cordova bridge and native implementation (if available).
+- err.message - Human-readable description of the error.
+- err.code - Error-code returned by native SDK; you can use this information to detect most common error reasons and provide extra
+  logic based on this information. **Important:** code is platform specific, see below for more details:
+- iOS: https://github.com/AzureAD/azure-activedirectory-library-for-objc/blob/dev/ADAL/src/public/ADErrorCodes.h
+- Android: https://github.com/AzureAD/azure-activedirectory-library-for-android/blob/master/src/src/com/microsoft/aad/adal/ADALError.java
+- Windows: https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/blob/master/src/ADAL.PCL/Constants.cs
+- err.details - Raw error information returned by Apache Cordova bridge and native implementation (if available).
 
 ## Logging
+
 You can configure the plugin to collect log messages from native libraries to help diagnose issues. To configure logging make the following call to set a callback that will be invoked every time when new log message is generated.
+
 ```javascript
 Microsoft.ADAL.AuthenticationSettings.setLogger(function logger(logItem) {
   ...
 });
 ```
+
 `setLogger` method takes user's logger function, which will be triggered each time with `LogItem` instance when internal logs are received.
 `LogItem` instance includes the following properties:
-* message - A short log message describing the event that occurred
-* additionalMessage - A longer message that contains other details relevant to event (android, iOS)
-* level - The level (number) of the log message. **Important:** level is platform specific, see below for more details:
-  * iOS: https://github.com/AzureAD/azure-activedirectory-library-for-objc/blob/c891135340077046ddd1065bcaaad8dc8d29ea60/ADAL/src/public/ADLogger.h
-  * Android: https://github.com/AzureAD/azure-activedirectory-library-for-android/blob/14794061e6791ea51a162195a8b17735b6a81ec5/adal/src/main/java/com/microsoft/aad/adal/Logger.java
-  * Windows: https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/blob/924ad544439e9b136ccc3cfc5ed9c07a984f3fb9/src/ADAL.PCL/IAdalLogCallback.cs
-* tag - tag for the log message (android)
-* errorCode - An integer error code if the log message is an error (android, iOS)
+
+- message - A short log message describing the event that occurred
+- additionalMessage - A longer message that contains other details relevant to event (android, iOS)
+- level - The level (number) of the log message. **Important:** level is platform specific, see below for more details:
+  - iOS: https://github.com/AzureAD/azure-activedirectory-library-for-objc/blob/c891135340077046ddd1065bcaaad8dc8d29ea60/ADAL/src/public/ADLogger.h
+  - Android: https://github.com/AzureAD/azure-activedirectory-library-for-android/blob/14794061e6791ea51a162195a8b17735b6a81ec5/adal/src/main/java/com/microsoft/aad/adal/Logger.java
+  - Windows: https://github.com/AzureAD/azure-activedirectory-library-for-dotnet/blob/924ad544439e9b136ccc3cfc5ed9c07a984f3fb9/src/ADAL.PCL/IAdalLogCallback.cs
+- tag - tag for the log message (android)
+- errorCode - An integer error code if the log message is an error (android, iOS)
 
 To set the logging level in your application call
+
 ```javascript
 Microsoft.ADAL.AuthenticationSettings.setLogLevel(0)
 .then(function() {
@@ -200,10 +214,11 @@ The recomendation here is
 
 1. Step1: clear cache
 
-    var authContext = new Microsoft.ADAL.AuthenticationContext("https://login.windows.net/common");
-    authContext.tokenCache.clear();
+   var authContext = new Microsoft.ADAL.AuthenticationContext("https://login.windows.net/common");
+   authContext.tokenCache.clear();
+
 1. Step2: make `XmlHttpRequest` (or open InAppBrowser instance) pointing to the sign out url.
-In most cases the url should look like the following: `https://login.windows.net/{tenantid or "common"}/oauth2/logout?post_logout_redirect_uri={URL}`
+   In most cases the url should look like the following: `https://login.windows.net/{tenantid or "common"}/oauth2/logout?post_logout_redirect_uri={URL}`
 
 ## 'Class not registered' error on Windows
 
@@ -217,46 +232,46 @@ Multiple login dialog windows will be shown if `acquireTokenAsync` is called mul
 
 ### Prerequisites
 
-* [NodeJS and NPM](https://nodejs.org/)
+- [NodeJS and NPM](https://nodejs.org/)
 
-* [Cordova CLI](https://cordova.apache.org/)
+- [Cordova CLI](https://cordova.apache.org/)
 
   Cordova CLI can be easily installed via NPM package manager: `npm install -g cordova`
 
-* Additional prerequisites for each target platform can be found at [Cordova platforms documentation](http://cordova.apache.org/docs/en/edge/guide_platforms_index.md.html#Platform%20Guides) page:
-  * [Instructions for Android](http://cordova.apache.org/docs/en/edge/guide_platforms_android_index.md.html#Android%20Platform%20Guide)
-  * [Instructions for iOS](http://cordova.apache.org/docs/en/edge/guide_platforms_ios_index.md.html#iOS%20Platform%20Guide)
-  * [Instructions for Windows] (http://cordova.apache.org/docs/en/edge/guide_platforms_win8_index.md.html#Windows%20Platform%20Guide)
+- Additional prerequisites for each target platform can be found at [Cordova platforms documentation](http://cordova.apache.org/docs/en/edge/guide_platforms_index.md.html#Platform%20Guides) page:
+  - [Instructions for Android](http://cordova.apache.org/docs/en/edge/guide_platforms_android_index.md.html#Android%20Platform%20Guide)
+  - [Instructions for iOS](http://cordova.apache.org/docs/en/edge/guide_platforms_ios_index.md.html#iOS%20Platform%20Guide)
+  - [Instructions for Windows](http://cordova.apache.org/docs/en/edge/guide_platforms_win8_index.md.html#Windows%20Platform%20Guide)
 
 ### To build and run sample application
 
-* Clone plugin repository into a directory of your choice
+- Clone plugin repository into a directory of your choice
 
-    ```
-    git clone https://github.com/AzureAD/azure-activedirectory-library-for-cordova.git
-    ```
+  ```
+  git clone https://github.com/AzureAD/azure-activedirectory-library-for-cordova.git
+  ```
 
-* Create a project and add the platforms you want to support
+- Create a project and add the platforms you want to support
 
-    ```
-    cordova create ADALSample --copy-from="azure-activedirectory-library-for-cordova/sample"
-    cd ADALSample
-    cordova platform add android
-    cordova platform add ios
-    cordova platform add windows
-    ```
+  ```
+  cordova create ADALSample --copy-from="azure-activedirectory-library-for-cordova/sample"
+  cd ADALSample
+  cordova platform add android
+  cordova platform add ios
+  cordova platform add windows
+  ```
 
-* Add the plugin to your project
+- Add the plugin to your project
 
-    ```
-    cordova plugin add ../azure-activedirectory-library-for-cordova
-    ```
+  ```
+  cordova plugin add ../azure-activedirectory-library-for-cordova
+  ```
 
-* Build and run application
+- Build and run application
 
-    ```
-    cordova run
-    ```
+  ```
+  cordova run
+  ```
 
 ## Setting up an Application in Azure AD
 
@@ -268,20 +283,22 @@ This plugin contains test suite, based on [Cordova test-framework plugin](https:
 
 To run the tests you need to create a new application as described in [Installation Instructions section](#installation-instructions) and then do the following steps:
 
-* Add test suite to application
+- Add test suite to application
 
-    ```
-    cordova plugin add ../azure-activedirectory-library-for-cordova/tests
-    ```
+  ```
+  cordova plugin add ../azure-activedirectory-library-for-cordova/tests
+  ```
 
-* Update application's config.xml file: change `<content src="index.html" />` to `<content src="cdvtests/index.html" />`
-* Change AD-specific settings for test application at the beginning of `plugins\cordova-plugin-ms-adal\www\tests.js` file. Update `AUTHORITY_URL`, `RESOURCE_URL`, `REDIRECT_URL`, `APP_ID` to values, provided by your Azure AD. For instructions how to setup an Azure AD application see [Setting up an Application in Azure AD section](#setting-up-an-application-in-azure-ad).
-* Build and run application.
+- Update application's config.xml file: change `<content src="index.html" />` to `<content src="cdvtests/index.html" />`
+- Change AD-specific settings for test application at the beginning of `plugins\cordova-adal-plugin\www\tests.js` file. Update `AUTHORITY_URL`, `RESOURCE_URL`, `REDIRECT_URL`, `APP_ID` to values, provided by your Azure AD. For instructions how to setup an Azure AD application see [Setting up an Application in Azure AD section](#setting-up-an-application-in-azure-ad).
+- Build and run application.
 
-## Windows Quirks ##
+## Windows Quirks
+
 Plugin is based on native ADAL v2 as ADAL v3 [does not support Winmd anymore](https://stackoverflow.com/questions/37467211/adal-3-windown-8-1-app-nuget-update-failing#comment62469160_37468708).
 
 ### Using ADFS/SSO
+
 To use ADFS/SSO on Windows platform (Windows Phone 8.1 is not supported for now) add the following preference into `config.xml`:
 `<preference name="adal-use-corporate-network" value="true" />`
 
@@ -289,10 +306,12 @@ To use ADFS/SSO on Windows platform (Windows Phone 8.1 is not supported for now)
 
 It will add all needed application capabilities and toggle authContext to support ADFS. You can change its value to `false` and back later, or remove it from `config.xml` - call `cordova prepare` after it to apply the changes.
 
-__Note__: You should not normally use `adal-use-corporate-network` as it adds capabilities, which prevents an app from being published in the Windows Store.
+**Note**: You should not normally use `adal-use-corporate-network` as it adds capabilities, which prevents an app from being published in the Windows Store.
 
-## Android Quirks ##
+## Android Quirks
+
 ### Broker support
+
 The following method should be used to enable broker component support (delivered with Intune's Company portal app). Read [ADAL for Android](https://github.com/AzureAD/azure-activedirectory-library-for-android) to understand broker concept in more details.
 
 ```javascript
@@ -301,19 +320,24 @@ Microsoft.ADAL.AuthenticationSettings.setUseBroker(true)
   ...
 ```
 
-__Note__: Developer needs to register special redirectUri for broker usage. RedirectUri is in the format of `msauth://packagename/Base64UrlencodedSignature`
+**Note**: Developer needs to register special redirectUri for broker usage. RedirectUri is in the format of `msauth://packagename/Base64UrlencodedSignature`
 
-## iOS Quirks ##
+## iOS Quirks
+
 ### Broker support
+
 Plugin automatically detects whether to enable brokered authentication based on redirectUri format (if starts with `x-msauth-`).
 Developer needs to register special redirectUri for broker usage following format below:
+
 ```
 x-msauth-<your-bundle-id>://<your.bundle.id>
 ex: x-msauth-com-microsoft-mytestiosapp://com.microsoft.mytestiosapp
 ```
+
 Read [ADAL for iOS](https://github.com/AzureAD/azure-activedirectory-library-for-objc#brokered-authentication) to understand broker concept in more details.
 
-## Copyrights ##
+## Copyrights
+
 Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use these files except in compliance with the License. You may obtain a copy of the License at

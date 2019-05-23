@@ -1,9 +1,9 @@
 {
-  "name": "cordova-plugin-ms-adal",
-  "version": "0.10.1",
-  "description": "Provides Microsoft Azure Active Directory (ADAL) OAuth client.",
+  "name": "cordova-adal-plugin",
+  "version": "0.0.3",
+  "description": "Provides Microsoft Azure Active Directory (ADAL) OAuth client. Supports refresh token with broker authentication",
   "cordova": {
-    "id": "cordova-plugin-ms-adal",
+    "id": "cordova-adal-plugin",
     "platforms": [
       "android",
       "ios",
@@ -56,7 +56,7 @@
     "cordova-ios",
     "cordova-windows"
   ],
-  "author": "MSOpenTech",
+  "author": "Donovan De Smedt",
   "license": "Apache 2.0",
   "bugs": {
     "url": "https://github.com/AzureAD/azure-activedirectory-library-for-cordova/issues"
